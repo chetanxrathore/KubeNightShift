@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scale-down-deployments
+  namespace: kube-system
+spec:
+  schedule: "0 18 * * 1-5"  # Every day at 10 PM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: scaler
+          containers:
+            - name: scaler
+              image: chetanspartan/scaler:v1
+              env:
+                - name: SCALE_TO
+                  value: "0"
+          restartPolicy: OnFailure
